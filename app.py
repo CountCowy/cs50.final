@@ -4,6 +4,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from scanner import takeit
 from JePeux import query_openai
 import os
+import sqlite3
 
 
 
@@ -14,8 +15,19 @@ import os
 #flask index
 #- history page, instruction on how to scan, support/contact page with credits
 #registering and log in feature
+#user settings
+#- maybe add a toggle for gpt ooutput, darkmode, maybe have onboarding for demographics like why you're using this, teacher/student etc. 
 #database to store previous inputs, user info etc.
 #admin panel?
+
+# conn = sqlite3.connect("widener.db")
+# mouse = conn.cursor()
+# mouse.execute("""
+#     CREATE TABLE IF NOT EXISTS users(
+#     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+#     username TEXT NOT NULL,
+#     hash TEXT NOT NULL);
+#     """)
 
 
 custom_template_path = os.path.join(os.path.dirname(__file__), 'pantheon')
@@ -68,4 +80,42 @@ def scanned():
     gpt = session.pop('gpt')
     return render_template("scanned.html", algorithm_scansion=algo, gpt_scansion=gpt)
 
+@app.route("/register")
+def register():
+    """user registration page"""
+    if request.method == "POST":
+        usrname = request.form.get("username")
+        email = request.form.get("email")
+        
+        if not usrname:
+            return apology("must provide username", 403)
+        elif not request.form.get("password"):
+            return apology("must provide password", 403)
+        elif request.form.get("password") != request.form.get("confirm"):
+            return apology("passwords do not match", 403)
+        
+        mouse.execute(
+            "SELECT * FROM users WHERE username = ?", (usrname,)
+        )
+        rows = mouse.fetchall()
+        if len(rows):
+            return apology("username already exists", 403)
+        
+        hashedpass = generate_password_hash(request.form.get("password"))
+        mouse.execute(
+            "INSERT INTO users (username, hash) VALUES (?, ?)", username, hashedpass
+        )
 
+        rows = mouse.execute(
+            "SELECT * FROM users WHERE username = ?", username
+        )
+        # Remember which user has logged in
+        session["user_id"] = rows[0]["id"]
+
+        
+"""cur.execute(
+    "INSERT INTO logs (user, action) VALUES (:user, :action)",
+    {"user": username, "action": action} - another option
+)"""
+
+    return render_template("register.html")
