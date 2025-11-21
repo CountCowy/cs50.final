@@ -10,7 +10,8 @@ from JePeux import query_openai
 #do it with gpt
 #flask index
 #registering and log in feature
-#database to store previous inputs, user info etc. 
+#database to store previous inputs, user info etc.
+#admin panel?
 
 
 
