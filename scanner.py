@@ -594,7 +594,7 @@ def takeit(line2):
     return(result)
 
 if __name__ == "__main__":
-    takeit(input("line?"))
+    takeit(input("line? "))
 
 #dipthongs
 # ae, au, ei, eu, oe, and, in early Latin, ai, oi, ou.

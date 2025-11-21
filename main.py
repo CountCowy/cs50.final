@@ -1,43 +1,29 @@
-from tkinter import *
+from flask import Flask, flash, redirect, render_template, request, session
+from flask_session import Session
+from werkzeug.security import check_password_hash, generate_password_hash
 from scanner import takeit
-#GLOBAL VARIABLES
+from JePeux import query_openai
 
-#windows & widgets
-window = Tk()
-window.configure(background="#990033")
-window.title("Scanner")
-window.geometry("1080x1080")
-window.resizable(600,600)
-window.iconbitmap("favi.png")
-x=1040
-y=720
-mainframe = Frame(window,padx=5, pady=5,width=x,height=y, bg="#003366")
-mainframe.grid(padx=20, pady=20) #pads the frame
-mainframe.grid_propagate(False)
-for i in range(10):
-    mainframe.grid_rowconfigure(i, weight=1)
-    mainframe.grid_columnconfigure(i, weight=1)
 
-title = Label(mainframe, text="Welcome to Scanner")
-title.grid(row=0, column=4)
+#plan
+#get input n shi working, basic home page with form, jinja blah
+#do it with gpt
+#flask index
+#registering and log in feature
+#database to store previous inputs, user info etc. 
 
-line = Entry(mainframe)
-line.grid(row=2, column=4)
 
-result = Label(mainframe, text="")
-result.grid(row=6, column = 4)
 
-def sub():
-    thing=line.get()
-    #line.config(state="disabled")
-    #submit.config(state="disabled")
-    output=takeit(thing.lower())
-    result.config(text = output)
-    
-submit = Button(mainframe, text="Submit line", command = sub)
-submit.grid(row=4, column = 4)
+app = Flask(__name__)
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
-window.eval('tk::PlaceWindow . center')
-window.mainloop()
 
-#SCENES
+@app.after_request
+def after_request(response):
+    """Ensure responses aren't cached"""
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Expires"] = 0
+    response.headers["Pragma"] = "no-cache"
+    return response
