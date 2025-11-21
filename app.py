@@ -51,8 +51,11 @@ def index():
             gpt_output = query_openai(line)
         except Exception as e:
             gpt_output = e
+            
+        session['algo'] = algorithm_output
+        session['gpt'] = gpt_output
         
-        return redirect(url_for('scanned', algo=algorithm_output, gpt = gpt_output))
+        return redirect(url_for('scanned'))
     
 
     return render_template("index.html",)
@@ -61,6 +64,8 @@ def index():
 @app.route("/scanned")
 def scanned():
     """page to display final scansion of inputed line"""
-    return render_template("scanned.html", algorithm_scansion=request.args.get('algo'), gpt_scansion=request.args.get('gpt'))
+    algo = session.pop('algo')
+    gpt = session.pop('gpt')
+    return render_template("scanned.html", algorithm_scansion=algo, gpt_scansion=gpt)
 
 
