@@ -37,7 +37,7 @@ def after_request(response):
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    """Show portfolio of stocks and add money to account"""
+    """page to input line of poetry"""
     if request.method == "POST":
         #get scansion.
         #redirect to scansion page, with template filled with scansion stuff
@@ -60,8 +60,7 @@ def index():
 
 @app.route("/scanned")
 def scanned():
-    """Show portfolio of stocks and add money to account"""
-        
+    """page to display final scansion of inputed line"""
     return render_template("scanned.html", algorithm_scansion=request.args.get('algo'), gpt_scansion=request.args.get('gpt'))
 
 

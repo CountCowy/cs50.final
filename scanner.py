@@ -578,6 +578,7 @@ def takeit(line2):
         result += foot+", "
     result = result[:-2]
     result += "\n" + feet3
+    result += "\n" + stocking(step2)
     
     
     result += "\n\n"+elidOut
@@ -593,8 +594,24 @@ def takeit(line2):
     magic = []
     return(result)
 
+def stocking(scannedline):
+    longs = "āēīōūĀĒĪŌŪ"
+    shorts = "ăĕĭŏŭŷ"
+    vowelsinfoot = 0
+    i=0
+    while i != len(scannedline): #while loop to accomodate the changing length of the string
+        if scannedline[i] in longs:
+            vowelsinfoot += 2
+        elif scannedline[i] in shorts:
+            vowelsinfoot += 1
+        if vowelsinfoot == 4 and i < len(scannedline)-2:
+            scannedline = scannedline[:i+1] + "||" + scannedline[i+1:]
+            vowelsinfoot = 0
+        i+=1
+    return scannedline
+
 if __name__ == "__main__":
-    takeit(input("line? "))
+    print(takeit(input("line? ")))
 
 #dipthongs
 # ae, au, ei, eu, oe, and, in early Latin, ai, oi, ou.
