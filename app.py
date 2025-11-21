@@ -1,4 +1,4 @@
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from scanner import takeit
@@ -35,15 +35,33 @@ def after_request(response):
     return response
 
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def index():
     """Show portfolio of stocks and add money to account"""
     if request.method == "POST":
         #get scansion.
         #redirect to scansion page, with template filled with scansion stuff
-        pass
+        line = request.form.get("usrinput")
+        print(line)
+        try:
+            algorithm_output = takeit(line)
+        except Exception as e:
+            algorithm_output = e
+        try:
+            gpt_output = query_openai(line)
+        except Exception as e:
+            gpt_output = e
+        
+        return redirect(url_for('scanned', algo=algorithm_output, gpt = gpt_output))
     
 
     return render_template("index.html",)
+
+
+@app.route("/scanned")
+def scanned():
+    """Show portfolio of stocks and add money to account"""
+        
+    return render_template("scanned.html", algorithm_scansion=request.args.get('algo'), gpt_scansion=request.args.get('gpt'))
 
 

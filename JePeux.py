@@ -35,7 +35,7 @@ Rules to follow:
 
 Return only the analysis, nothing else.
 """
-    print(prompt)
+    #print(prompt)
     try:
         response = client.chat.completions.create(
             model="gpt-4o-mini",  
