@@ -21,6 +21,7 @@ import sqlite3
 #admin panel?
 
 conn = sqlite3.connect("widener.db")
+conn.row_factory = sqlite3.Row
 mouse = conn.cursor()
 mouse.execute("""
     CREATE TABLE IF NOT EXISTS users(
@@ -104,12 +105,13 @@ def register():
         
         hashedpass = generate_password_hash(request.form.get("password"))
         mouse.execute(
-            "INSERT INTO users (username, hash) VALUES (?, ?)", username, hashedpass
+            "INSERT INTO users (username, hash, email) VALUES (?, ?, ?)", (usrname, hashedpass, email)
         )
 
-        rows = mouse.execute(
-            "SELECT * FROM users WHERE username = ?", username
+        mouse.execute(
+            "SELECT * FROM users WHERE username = ?", (usrname,)
         )
+        rows = mouse.fetchall()
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
         
