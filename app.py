@@ -20,14 +20,15 @@ import sqlite3
 #database to store previous inputs, user info etc.
 #admin panel?
 
-# conn = sqlite3.connect("widener.db")
-# mouse = conn.cursor()
-# mouse.execute("""
-#     CREATE TABLE IF NOT EXISTS users(
-#     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-#     username TEXT NOT NULL,
-#     hash TEXT NOT NULL);
-#     """)
+conn = sqlite3.connect("widener.db")
+mouse = conn.cursor()
+mouse.execute("""
+    CREATE TABLE IF NOT EXISTS users(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    username TEXT NOT NULL,
+    hash TEXT NOT NULL,
+    email TEXT NOT NULL);
+    """)#note that we dont have any email confirmation yet
 
 
 custom_template_path = os.path.join(os.path.dirname(__file__), 'pantheon')
@@ -80,7 +81,7 @@ def scanned():
     gpt = session.pop('gpt')
     return render_template("scanned.html", algorithm_scansion=algo, gpt_scansion=gpt)
 
-@app.route("/register")
+@app.route("/register", methods=["GET", "POST"])
 def register():
     """user registration page"""
     if request.method == "POST":
@@ -111,11 +112,40 @@ def register():
         )
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
-
         
+        # Redirect user to home page
+        return redirect("/")
+
+    return render_template("register.html")
+
 """cur.execute(
     "INSERT INTO logs (user, action) VALUES (:user, :action)",
     {"user": username, "action": action} - another option
 )"""
 
-    return render_template("register.html")
+
+
+
+def apology(message, code=400): #stolen completely from cs50 finance
+    """Render message as an apology to user."""
+
+    def escape(s):
+        """
+        Escape special characters.
+
+        https://github.com/jacebrowning/memegen#special-characters
+        """
+        for old, new in [
+            ("-", "--"),
+            (" ", "-"),
+            ("_", "__"),
+            ("?", "~q"),
+            ("%", "~p"),
+            ("#", "~h"),
+            ("/", "~s"),
+            ('"', "''"),
+        ]:
+            s = s.replace(old, new)
+        return s
+
+    return render_template("apology.html", top=code, bottom=escape(message)), code
