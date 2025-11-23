@@ -11,6 +11,7 @@ distlib==0.3.9
 executing==2.2.1
 filelock==3.18.0
 Flask==3.1.2
+Flask-Session==0.8.0
 gitdb==4.0.12
 GitPython==3.1.45
 google-api-core==2.11.0
