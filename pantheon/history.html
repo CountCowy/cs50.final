@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<div class="container mt-5 text-light">
+    <h2 class="mb-4">Scan History</h2>
+
+    {% if scans %}
+        <div class="list-group">
+            {% for scan in scans %}
+            <a href="{{ url_for('view_scan', scan_id=scan['id']) }}"
+               class="list-group-item list-group-item-action bg-dark text-light border-secondary">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <strong>{{ scan['input_line'] }}</strong>
+                        <div class="text-secondary small">Scanned: {{ scan['timestamp'] }}</div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-secondary">You have no past scans.</p>
+    {% endif %}
+</div>
+{% endblock %}

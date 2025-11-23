@@ -29,6 +29,18 @@ mouse.execute("""
     hash TEXT NOT NULL,
     email TEXT NOT NULL);
     """)#note that we dont have any email confirmation yet
+mouse.execute("""
+    CREATE TABLE IF NOT EXISTS history(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    user_id INTEGER NOT NULL,
+    input_line TEXT NOT NULL,
+    algorithm_scan TEXT NOT NULL,
+    gpt_scan TEXT NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    );
+    """)#note that we dont have any email confirmation yet
+conn.commit()
 
 
 custom_template_path = os.path.join(os.path.dirname(__file__), 'pantheon')
@@ -68,6 +80,12 @@ def index():
             
         session['algo'] = algorithm_output
         session['gpt'] = gpt_output
+        
+        mouse.execute(
+        "INSERT INTO history (user_id, input_line, algorithm_scan, gpt_scan) VALUES (?, ?, ?, ?)",
+        (session["user_id"], line, session['algo'], session['gpt'])
+        )
+        conn.commit()
         
         return redirect(url_for('scanned'))
     
@@ -169,6 +187,27 @@ def logout():
     # Redirect user to login form
     return redirect("/")
 
+@app.route("/history")
+@login_required
+def history():
+    scans = mouse.execute(
+        "SELECT * FROM history WHERE user_id = ? ORDER BY timestamp DESC",
+        (session["user_id"],)
+    ).fetchall()
+    
+    print("hi")
 
+    return render_template("history.html", scans=scans)
 
+@app.route("/scan/<int:scan_id>")
+@login_required
+def view_scan(scan_id):
+    scan = mouse.execute(
+        "SELECT * FROM history WHERE id = ? AND user_id = ?",
+        (scan_id, session["user_id"],)
+    ).fetchone()
 
+    if scan is None:
+        return apolgy("This scan doesn't exist", 404)
+
+    return render_template("hitscan.html", scan=scan)
