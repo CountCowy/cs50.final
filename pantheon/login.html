@@ -77,31 +77,23 @@
   <!-- Registration Form -->
   <div class="container py-5">
     <div class="text-center mb-4">
-        <h1 class="text-warning">Welcome!</h1>
-        <p>Create an account to start scanning</p>
+        <h1 class="text-warning">Welcome back!</h1>
+        <p>Log in to start scanning</p>
     </div>
     <div class="card p-4 mx-auto" style="max-width: 700px;">
 
-        <form method="POST" action="{{ url_for('register') }}">
+        <form method="POST" action="{{ url_for('login') }}">
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
             <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required>
         </div>
         <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>
-        </div>
-        <div class="mb-3">
             <label for="password" class="form-label">Password</label>
             <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required>
         </div>
-        <div class="mb-3">
-            <label for="confirm" class="form-label">Password</label>
-            <input type="password" class="form-control" id="confirm" name="confirm" placeholder="Confirm your password" required>
-        </div>
-        <button type="submit" class="btn btn-primary w-100">Register</button>
+        <button type="submit" class="btn btn-primary w-100">Log in</button>
         </form>
-        <p class="text-center mt-3">Already have an account? <a href="/login">Login</a></p>
+        <p class="text-center mt-3">Don't have an account? <a href="/register">Register</a></p>
     </div>
 
 </body>

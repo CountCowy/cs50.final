@@ -5,8 +5,7 @@ from scanner import takeit
 from JePeux import query_openai
 import os
 import sqlite3
-
-
+from labienus import apology, login_required
 
 #plan
 #get input n shi working, basic home page with form, jinja blah
@@ -50,6 +49,7 @@ def after_request(response):
 
 
 @app.route("/", methods=["GET", "POST"])
+@login_required
 def index():
     """page to input line of poetry"""
     if request.method == "POST":
@@ -76,6 +76,7 @@ def index():
 
 
 @app.route("/scanned")
+@login_required
 def scanned():
     """page to display final scansion of inputed line"""
     algo = session.pop('algo')
@@ -100,6 +101,7 @@ def register():
             "SELECT * FROM users WHERE username = ?", (usrname,)
         )
         rows = mouse.fetchall()
+        print(rows)
         if len(rows):
             return apology("username already exists", 403)
         
@@ -107,6 +109,8 @@ def register():
         mouse.execute(
             "INSERT INTO users (username, hash, email) VALUES (?, ?, ?)", (usrname, hashedpass, email)
         )
+        
+        conn.commit()
 
         mouse.execute(
             "SELECT * FROM users WHERE username = ?", (usrname,)
@@ -116,6 +120,7 @@ def register():
         session["user_id"] = rows[0]["id"]
         
         # Redirect user to home page
+        print(session["user_id"], "ID2")
         return redirect("/")
 
     return render_template("register.html")
@@ -126,28 +131,44 @@ def register():
 )"""
 
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    """user log in page"""
+    if request.method == "POST":
+        usrname = request.form.get("username")
+        
+        if not usrname:
+            return apology("must provide username", 403)
+        elif not request.form.get("password"):
+            return apology("must provide password", 403)
+        
+        mouse.execute(
+            "SELECT * FROM users WHERE username = ?", (usrname,)
+        )
+        rows = mouse.fetchall()
+        print(rows)
+        if not len(rows) or not check_password_hash(rows[0]["hash"], request.form.get("password")):
+            return apology("invalid username and/or password", 403) #language stolen cs50 finance
+
+        # Remember which user has logged in
+        session["user_id"] = rows[0]["id"]
+        
+        # Redirect user to home page
+        return redirect("/")
+
+    return render_template("login.html")
 
 
-def apology(message, code=400): #stolen completely from cs50 finance
-    """Render message as an apology to user."""
+@app.route("/logout")
+def logout():
+    """Log user out"""
 
-    def escape(s):
-        """
-        Escape special characters.
+    # Forget any user_id
+    session.clear()
 
-        https://github.com/jacebrowning/memegen#special-characters
-        """
-        for old, new in [
-            ("-", "--"),
-            (" ", "-"),
-            ("_", "__"),
-            ("?", "~q"),
-            ("%", "~p"),
-            ("#", "~h"),
-            ("/", "~s"),
-            ('"', "''"),
-        ]:
-            s = s.replace(old, new)
-        return s
+    # Redirect user to login form
+    return redirect("/")
 
-    return render_template("apology.html", top=code, bottom=escape(message)), code
+
+
+
