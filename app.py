@@ -24,9 +24,16 @@ from labienus import apology, login_required
 custom_template_path = os.path.join(os.path.dirname(__file__), 'pantheon')
 app = Flask(__name__, template_folder=custom_template_path)
 app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
+app.config["SESSION_TYPE"] = "null" #when local, = "filesystem"
 Session(app)
 
+app.started = False
+@app.before_request
+def clear_session_on_start():
+    if not app.started:
+        session.clear()
+        app.started = True
+        
 
 #database connection
 def get_db():
