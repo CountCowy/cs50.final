@@ -1,5 +1,5 @@
 from flask import Flask, flash, redirect, render_template, request, session, url_for, g
-from flask_session import Session
+#from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from scanner import takeit
 from JePeux import query_openai
@@ -23,9 +23,11 @@ from labienus import apology, login_required
 
 custom_template_path = os.path.join(os.path.dirname(__file__), 'pantheon')
 app = Flask(__name__, template_folder=custom_template_path)
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "null" #when local, = "filesystem"
-Session(app)
+#app.config["SESSION_PERMANENT"] = False
+#app.config["SESSION_TYPE"] = "null" #when local, = "filesystem"
+#Session(app)
+app.secret_key = os.environ.get("SECRET_KEY", "devsecretkey")
+
 
 app.started = False
 @app.before_request
