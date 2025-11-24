@@ -163,6 +163,8 @@ def register():
 def login():
     """user log in page"""
     if request.method == "POST":
+        db = get_db()
+        mouse = db.cursor()
         usrname = request.form.get("username")
         
         if not usrname:
