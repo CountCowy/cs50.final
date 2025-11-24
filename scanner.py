@@ -4,8 +4,9 @@ workings = 0
 magic = []
 elided = []
 reasons = []
-#def print(*args, **kwargs):
-#    pass
+def print(*args, **kwargs):
+    pass
+
 def procedge(instructions):
     global reasons
     global scan
