@@ -35,8 +35,6 @@ def get_db():
         g.db.row_factory = sqlite3.Row
     return g.db
 def init_db():
-    global db
-    global mouse
     db = get_db()
     db.executescript("""
     CREATE TABLE IF NOT EXISTS users(
@@ -55,7 +53,6 @@ def init_db():
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id));
     """)
-    mouse = db.cursor()
     
 with app.app_context():
     init_db()
@@ -74,6 +71,8 @@ def after_request(response):
 def index():
     """page to input line of poetry"""
     if request.method == "POST":
+        db = get_db()
+        mouse = db.cursor()
         #get scansion.
         #redirect to scansion page, with template filled with scansion stuff
         line = request.form.get("usrinput")
@@ -114,6 +113,8 @@ def scanned():
 def register():
     """user registration page"""
     if request.method == "POST":
+        db = get_db()
+        mouse = db.cursor()
         usrname = request.form.get("username")
         email = request.form.get("email")
         
@@ -199,6 +200,8 @@ def logout():
 @app.route("/history")
 @login_required
 def history():
+    db = get_db()
+    mouse = db.cursor()
     scans = mouse.execute(
         "SELECT * FROM history WHERE user_id = ? ORDER BY timestamp DESC",
         (session["user_id"],)
@@ -211,6 +214,8 @@ def history():
 @app.route("/scan/<int:scan_id>")
 @login_required
 def view_scan(scan_id):
+    db = get_db()
+    mouse = db.cursor()
     scan = mouse.execute(
         "SELECT * FROM history WHERE id = ? AND user_id = ?",
         (scan_id, session["user_id"],)
