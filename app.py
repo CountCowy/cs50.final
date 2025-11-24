@@ -19,6 +19,15 @@ from labienus import apology, login_required
 #database to store previous inputs, user info etc.
 #admin panel?
 
+
+
+custom_template_path = os.path.join(os.path.dirname(__file__), 'pantheon')
+app = Flask(__name__, template_folder=custom_template_path)
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
+
+
 g.db = sqlite3.connect("widener.db", check_same_thread=False)
 conn = g.db
 conn.row_factory = sqlite3.Row
@@ -42,14 +51,6 @@ mouse.execute("""
     );
     """)#note that we dont have any email confirmation yet
 conn.commit()
-
-
-custom_template_path = os.path.join(os.path.dirname(__file__), 'pantheon')
-app = Flask(__name__, template_folder=custom_template_path)
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
-
 
 
 @app.after_request
@@ -212,3 +213,10 @@ def view_scan(scan_id):
         return apolgy("This scan doesn't exist", 404)
 
     return render_template("hitscan.html", scan=scan)
+
+
+@app.teardown_appcontext
+def close_db(exception):
+    db = g.pop("db", None)
+    if db is not None:
+        db.close()
