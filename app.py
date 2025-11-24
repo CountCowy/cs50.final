@@ -1,4 +1,4 @@
-from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask import Flask, flash, redirect, render_template, request, session, url_for, g
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from scanner import takeit
@@ -19,7 +19,8 @@ from labienus import apology, login_required
 #database to store previous inputs, user info etc.
 #admin panel?
 
-conn = sqlite3.connect("widener.db")
+g.db = sqlite3.connect("widener.db", check_same_thread=False)
+conn = g.db
 conn.row_factory = sqlite3.Row
 mouse = conn.cursor()
 mouse.execute("""
@@ -211,3 +212,10 @@ def view_scan(scan_id):
         return apolgy("This scan doesn't exist", 404)
 
     return render_template("hitscan.html", scan=scan)
+
+
+@app.teardown_appcontext
+def close_db(exception):
+    db = g.pop("db", None)
+    if db is not None:
+        db.close()
