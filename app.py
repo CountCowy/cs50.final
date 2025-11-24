@@ -212,10 +212,3 @@ def view_scan(scan_id):
         return apolgy("This scan doesn't exist", 404)
 
     return render_template("hitscan.html", scan=scan)
-
-
-@app.teardown_appcontext
-def close_db(exception):
-    db = g.pop("db", None)
-    if db is not None:
-        db.close()
