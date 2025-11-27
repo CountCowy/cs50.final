@@ -208,12 +208,12 @@ def history():
     .order("timestamp", desc=True)
     .execute())
     
-    return render_template("history.html", scans=scans)
+    return render_template("history.html", scans=scans_response.data)
 
 @app.route("/scan/<int:scan_id>")
 @login_required
 def view_scan(scan_id):
-    scan = (
+    scans_response = (
     supabase
     .table("history")
     .select("*")
@@ -222,10 +222,10 @@ def view_scan(scan_id):
     .single()
     .execute())
 
-    if scan is None:
+    if scans_response.data is None:
         return apolgy("This scan doesn't exist", 404)
 
-    return render_template("hitscan.html", scan=scan)
+    return render_template("hitscan.html", scan=scans_response.data)
         
         
 @app.route("/auth/confirmed")
