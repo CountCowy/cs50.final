@@ -20,15 +20,15 @@ Line:
 Do the following steps explicitly and in order:
 
 1. Write the line with all elisions marked.
-2. Divide it into syllables.
-3. Mark every syllable as long by nature, long by position, or short, and justify each quantity.
-4. Identify and number all six metrical feet.
+2. Divide it into syllables, paying attention to elisions and dipthongs.
+3. Analyze every syllable as long or short, and justify each decision based on the conventions of dactylic hexameter and Latin grammar.
+4. Divide the line of poetry into six metrical feet following the conventions of dactylic hexameter.
 5. Provide the final scansion in metrical notation.
 6. Then give the line again with macrons/breves applied to the syllables.
 
 Rules to follow:
-- Do not guess; give quantity reasons for every syllable.
-- If a syllable’s quantity is metrically forced, say so.
+- Do not guess; give specific reasons for every syllable.
+- If a syllable’s length is metrically forced, say so.
 - Use classical pronunciation rules, not ecclesiastical.
 - Be explicit about where elision occurs (or does not occur).
 - Do not translate or interpret the line.
@@ -40,7 +40,7 @@ Return only the analysis, nothing else.
         response = client.chat.completions.create(
             model="gpt-4o-mini",  
             messages=[
-                {"role": "system", "content": "You are an expert in latin specializing in Latin poetry in Dactylic Hexameter, like the Aeneid. Do not be confident. Be accurate and admit to confusion. Do not give the 'right' answer, give the best attempt. Do not ask follow up questions."},
+                {"role": "system", "content": "You are an expert in latin specializing in Latin poetry in Dactylic Hexameter, like the Aeneid. Do not be confident. Be accurate and admit to confusion. Focus on more on the information around the scansion than the final result. Do not ask follow up questions."},
                 {"role": "user", "content": prompt},
             ],
             temperature=0,
