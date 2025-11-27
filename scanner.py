@@ -5,7 +5,7 @@ magic = []
 elided = []
 reasons = []
 def print(*args, **kwargs):
-    pass
+    pass   
 
 def procedge(instructions):
     global reasons
@@ -431,6 +431,7 @@ def takeit(line2):
     magic = []
     elided = []
     reasons = []
+    problems = [] #potential problems with the inputted line
     
     line=""
     for letter in line2: #remove non letters
@@ -441,6 +442,12 @@ def takeit(line2):
             print(line)
             line=line[:i] + line[i+1:]
             print(line)
+            
+    #do sanity checks on the input
+    if len(line.split())<4:
+        problems += ["too short to be a full line of poetry"]
+    elif len(line.split())>18:
+        problems += ["too long to be a single line of poetry"]
 
     #go through every vowel and do specific logic for each
     for i in range(len(line)):
@@ -479,6 +486,11 @@ def takeit(line2):
     print(len(scan))
     dactyls = len(scan) - 12 - 1
     step1 = sigma(scan, line)
+    
+    if len(scan) > 18:
+        problems += ["too many syllables to be a line of poetry"]
+    elif len(scan) < 12:
+        problems += ["too few syllables to be a line of poetry"]
 
     print("filling in")
     feet = []
@@ -540,6 +552,13 @@ def takeit(line2):
     
     print("FEEEEEEEEEEET")
     print(feet)
+    
+    
+    if len(feet2) > 6:
+        problems += ["too many feet to be a line of poetry"]
+    elif len(feet2) < 6:
+        problems += ["too few feet to be a line of poetry"]
+        
     feet3 = ""
     for thing in feet:
         if thing == "LL":
@@ -584,6 +603,11 @@ def takeit(line2):
     
     result += "\n\n"+elidOut
     
+    if problems:
+        result += "\nProblems with input:"
+        for problem in problems:
+            result += "\n" +problem
+    
     print(reasons)
     print(len(reasons))
     print(len(scan))
@@ -593,9 +617,10 @@ def takeit(line2):
     furthercheck = False
     workings = 0
     magic = []
+    problems = []
     return(result)
 
-def stocking(scannedline):
+def stocking(scannedline): # adding || between feet on output (like putting on socks)
     longs = "āēīōūĀĒĪŌŪ"
     shorts = "ăĕĭŏŭŷ"
     vowelsinfoot = 0
@@ -660,4 +685,4 @@ if __name__ == "__main__":
 
 #ceasuras? accipiunt inimicum imbrem rimisque fatiscunt.
 
-#ȳŷ
+#ȳŷȲ
