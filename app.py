@@ -1,10 +1,7 @@
 from flask import Flask, flash, redirect, render_template, request, session, url_for, g
-#from flask_session import Session
-from werkzeug.security import check_password_hash, generate_password_hash
 from scanner import takeit
 from JePeux import query_openai
 import os
-#import sqlite3
 from labienus import apology, login_required
 from supabase import create_client, Client
 
@@ -24,9 +21,6 @@ from supabase import create_client, Client
 
 custom_template_path = os.path.join(os.path.dirname(__file__), 'pantheon')
 app = Flask(__name__, template_folder=custom_template_path)
-#app.config["SESSION_PERMANENT"] = False
-#app.config["SESSION_TYPE"] = "null" #when local, = "filesystem"
-#Session(app)
 app.secret_key = os.environ.get("SECRET_KEY", "devsecretkey")
 
 
@@ -38,7 +32,7 @@ def clear_session_on_start():
         app.started = True
         
 
-supabase_url = "https://fncutdkxzebsrfjbguaz.supabase.co"
+supabase_url = os.environ.get("SUPABASE_URL")
 supabase_api_key = os.environ.get("SUPABASE_KEY")
 supabase: Client = create_client(supabase_url, supabase_api_key)
 
