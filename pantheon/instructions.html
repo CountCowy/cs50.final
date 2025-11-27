@@ -81,79 +81,139 @@
 <body>
 
   <div class="container py-5">
-      <h1 class="mb-4 text-center">How to Scan Dactylic Hexameter</h1>
+      <h1 class="mb-4 text-center text-warning">How this works</h1>
   
       <div class="card shadow-sm mb-4">
           <div class="card-header bg-primary text-white">
               <h4 class="mb-0">Introduction</h4>
           </div>
           <div class="card-body text-white">
-              <p>Dactylic hexameter is the meter of epic Latin and Greek poetry, such as Virgil’s <em>Aeneid</em> or Homer’s <em>Iliad</em>. Each line consists of six metrical feet. The first four feet can be <strong>dactyls</strong> (– ∪ ∪) or <strong>spondees</strong> (– –). The fifth foot is usually a dactyl, and the sixth foot is a spondee.</p>
+              <p>This website is meant to be a tool to aid scanning Latin poetry in Dactylic hexameter. I have utilized two things. First is my homemade algirthm, which can scan Latin poetry with high accuracy. Second is a ChatGPT response, which is not meant to scan, but to provide additional information.</p>
+              
+            <div class="row g-4 text-white">
+                <div class="col-md-6 text-white">
+                    <div class="card text-white">
+                    <h2>Algorithm Scansion</h2>
+                    <div class="scansion-column text-white">
+                        <h4 class="text-warning">Disclaimer: The algorithm is NOT 100% accurate.<h4></h4>
+                        <ul>
+                            <li>This is largely due to the inherent difficulty of the task. The algorithm scans without any grammar or context information, so the only information it has is the placement of the letters. For some lines of poetry, the ending of the ablative being long by nature might be the key to finishing the scan- my algorithm can't detect that. However if you input a partial scan and manually supply that information, my algorithm can work off of that to finish the scan</li>
+                            <li>My algorithm is not fully refined. There are still bugs in the thought process. If you find any lines with iffy output, please send them to me for review through <a href="/contact">contact!</a> That would be much appreciated!</a></li>
+                            <li>It is for these reasons that I decided to include the ChatGPT output. To provide some more information to the user for cross reference</li>
+                        </ul>
+                    </div>
+                    </div>
+                </div>
+                <div class="col-md-6 text-white">
+                    <div class="card text-white">
+                    <h2>ChatGPT Scansion</h2>
+                    <div class="scansion-column text-white">
+                        <h4 class="text-warning">Disclaimer: ChatGPT IS VERY INACCURATE</h4>
+                        <ul>
+                            <li>ChatGPT is surprisingly terrible at scanning latin poetry, which makes sense since there's not much material online for it to learn from. Please note that my algorithm does not use ChatGPT or any other generative AI for any part of the process (not even for writing or debugging any part of the code)</li>
+                            <li>Given this innaccuracy, please do not consider the ChatGPT output directly. Only use it to better understand the reasoning of the algorithm, and as additional context. In the case of a conflict between the output of ChatGPT and the algorithm, odds are (99% chance) the algorithm is more correct (unless the output happens to be really bad).</li>
+                            <li>Again, ChatGPT is solely used to provide additional information on grammatical reasoning for the scansion and should not be taken at face value.</li>
+                        </ul>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <h3>The following explains each step of the algorithm. If you see anything wrong, <a href="/contact">let me know here</a></h3>
           </div>
       </div>
   
       <div class="card shadow-sm mb-4">
           <div class="card-header bg-success text-white">
-              <h4 class="mb-0">Step 1: Divide into Syllables</h4>
+              <h4 class="mb-0">Step 1: First pass</h4>
           </div>
           <div class="card-body text-white">
-              <p>Break the line into syllables and mark long (–) and short (∪) vowels. Rules:</p>
+              <p>Clean up input and do a first go through of the line to get the "easy" vowels</p>
+              <p>This is the bulk of the algorithm</p>
               <ul>
-                  <li>Long by nature: ā, ē, ī, ō, ū, ȳ</li>
-                  <li>Long by position: vowel followed by two consonants (or x, z)</li>
-                  <li>Short vowels: all others</li>
+                  <li>Remove anything in the input that is not a letter (a-z), a scanned vowel (ā-ū), or a space</li>
+                  <li>Mark the first vowel as long</li>
+                  <li>Mark any scansion given in the input (ā-ū)</li>
+                  <li>Find and remove any vowels that are elided (vowel at the end of a word (or 2nd to last before "m") where the next word begins with a vowel (or h + a vowel))</li>
+                  <li>Mark any vowels that are long by position: vowel followed by two consonants (or x, z)</li>
+                  <li>Go into vowel specific logic
+                    <ul>
+                        <li>Identify whether or not it is in a dipthong, and then whether it is the start or end of the dipthong (start is marked as long, end is ignored)</li>
+                        <li>For I, identify whether or not it is a consonantal I (aka J) (if it starts a word and is followed by a vowel or is sandwiched by 2 vowels (intervocalic))</li>
+                        <li>Side note: You make the life of the algorithm a lot easier if you input what you know to be a consonantal I as a J</li>
+                        <li>For U, ignore it if it is following a q ("qu" is a consonant in Latin)</li>
+                        <li>For y, if it is the start of a word, it is a consonant</li>
+                    </ul>
+                  </li>
+                  <li>Mark the final 5 vowels as a dactyl and spondee/trochee, since all dactylic hexameter ends in that pattern</li>
+                  <li>Mark the last vowel with an X - the algorithm does not analyze the final vowel, since it is in part determined by the next line of the poem, which the algorithm does not have</li>
+                  <br>
+                  <li>Anything not caught by the first pass is marked with a "?" and is finalized in Step 2</li>
               </ul>
               <div class="alert alert-warning">
                   Example: <br>
-                  Line: <em>Litora, multum ille et terris iactatus et alto</em> <br>
-                  Syllables: li-to-ra, mul-tum il-le et ter-ris i-ac-ta-tus et al-to
+                  Line: <em>Musa, mihi causas memora, quō numine laeso</em> <br>
+                  Step 1: Mūsa mihi cāusās memora quō nūmĭnĕ lāesō
               </div>
           </div>
       </div>
   
       <div class="card shadow-sm mb-4">
           <div class="card-header bg-info text-white">
-              <h4 class="mb-0">Step 2: Identify Elisions</h4>
+              <h4 class="mb-0">Step 2: Fill in the rest</h4>
           </div>
           <div class="card-body text-white">
-              <p>Elisions occur when an unaccented vowel at the end of a word combines with a vowel at the start of the next word.</p>
+              <p>Determine the scansion of anything that was previously marked as a "?"</p>
+              <p>Note three things</p>
+              <ul>
+                <li>If D is the number of dactyls, S is the number of spondees, and N is the number of syllables, we know that D + S = 6 in hexameter. Otherwise put, we know that S = 6-D. We also know that each spondee contributes 2 syllables, and each dactyl contributes 3. From this, we find that the number of syllables is N = 2S + 3D. Substituting S = 6-D, the number of syllables becomes N = 2(6-D) + 3D = 12+D. So, D = N-12: the number of dactyls is 12 less than the number of syllables.</li>
+                <li>My algorithm follows the principal of "when in doubt, make it a dactyl". This works surprisingly well, but is indeed some guesswork</li>
+              </ul>
+              <p>Onto the logic</p>
+              <ul>
+                <li>Note that this goes from the end to the beginning, starting at the last vowel of the line</li>
+                <li>Any unscanned vowel stuck between two long vowels must be long (in a spondee one way or the other)</li>
+                <li>If the next vowel is long and is not the start of a foot, then the current vowel must be long (Start of a spondee)</li>
+                <li>If there's space for a dactyl, put in a dactyl until the max amount of dactyls is met (as calculated above)</li>
+                <li>if the max amount of dactyls is met, everything else is long</li>
+              </ul>
               <div class="alert alert-warning">
-                  Example: mul-tum il-le → mul-tum ille (the <em>e</em> of <em>multum</em> elides with the <em>i</em> of <em>ille</em>)
+                  Example:<br>
+                  Step 2: Mūsă mĭhī cāusās mĕmŏrā quō nūmĭnĕ lāesō
               </div>
           </div>
       </div>
   
       <div class="card shadow-sm mb-4">
           <div class="card-header bg-warning text-dark">
-              <h4 class="mb-0">Step 3: Mark Longs and Shorts</h4>
+              <h4 class="mb-0">Step 3: The Output</h4>
           </div>
           <div class="card-body text-white">
-              <p>Go syllable by syllable:</p>
+              <p>Gather up everything for the output</p>
               <ul>
-                  <li>– : long syllable</li>
-                  <li>∪ : short syllable</li>
+                  <li>Get the original line, step 1, and step 2</li>
+                  <li>Get the scansion in terms of L's and S's, which is stored throughout the algorithm</li>
+                  <li>Verbalize the previous step into dactyls and spondees. The last foot is called a Trochee when it could be a trochee or spondee. In fact it is marked as a spondee, but it should be interpreted as indeterminate</li>
+                  <li>Separate step 2 into different feet separated by ||</li>
               </ul>
               <div class="alert alert-warning">
-                  Line: li-to-ra, mul-tum il-le et ter-ris i-ac-ta-tus et al-to <br>
-                  Scansion: – ∪ ∪ | – – | – ∪ ∪ | – – | – ∪ ∪ | – –
+                  <p>Example:</p>
+                  <p>LSS, LL, LSS, LL, LSS, LX</p> 
+                  <p>Dactyl, Spondee, Dactyl, Spondee, Dactyl, Trochee</p>
+                  <p>Mūsă mĭ||hī cā||usās mĕmŏ||rā quō|| nūmĭnĕ|| lāesō</p>
               </div>
           </div>
       </div>
   
       <div class="card shadow-sm mb-4">
           <div class="card-header bg-danger text-white">
-              <h4 class="mb-0">Step 4: Divide into Feet</h4>
+              <h4 class="mb-0">Step 4: GPT</h4>
           </div>
           <div class="card-body text-white">
-              <p>Group the syllables into six feet:</p>
-              <ol>
-                  <li>Dactyl or spondee</li>
-                  <li>Dactyl or spondee</li>
-                  <li>Dactyl or spondee</li>
-                  <li>Dactyl or spondee</li>
-                  <li>Dactyl (usually)</li>
-                  <li>Spondee</li>
-              </ol>
+              <p>Prompt ChatGPT for some additional information</p>
+              <ul>
+                  <li>This is the part of the process that takes the longest, since ChatGPT likes to think for a long time for scansion prompts (all for naught) </li>
+                  <li>Current model in use is 4o-mini</li>
+              </ul>
           </div>
       </div>
   
@@ -162,21 +222,13 @@
               <h4 class="mb-0">Summary</h4>
           </div>
           <div class="card-body text-white">
-              <p>Check that your line follows hexameter rules:</p>
-              <ul>
-                  <li>First four feet: dactyl (– ∪ ∪) or spondee (– –)</li>
-                  <li>Fifth foot: usually dactyl (– ∪ ∪)</li>
-                  <li>Sixth foot: spondee (– –)</li>
-              </ul>
-              <pre>– : long syllable
-  ∪ : short syllable
-  | : foot division
-  () : metrical foot</pre>
-              <p>Practice is key—start with short lines and gradually scan longer epic verses.</p>
+              <p>That is the process under the hood of this website. Again, if you have any questions, criticism, confusion etc. please contact me on <a href="/contact">the contact page</a></p>
+              <p>Please remember that this process in not flawless. In fact, the example line, <em>Musa, mihi causas memora, quō numine laeso</em>, will output an incorrect scansion if you do not provide the long mark on quo. Test it for yourself!</p>
+              <p>That's because the "when in doubt, dactyl" method happens to be wrong in this scenario. There is not enough information for the algoritm to be 100% correct without grammatical context, so it needs a nudge in the right direction from the user</p>
+              <p>I hope this proves useful!</p>
           </div>
       </div>
   </div>
-  
 
 </body>
 </html>

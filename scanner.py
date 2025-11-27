@@ -30,12 +30,12 @@ def logic(cont, ind): #general logic
     global elided
     global reasons
     global magic
-    vowels = "aeiouyAEIOUYāēīōūĀĒĪŌŪ"
+    vowels = "aeiouyAEIOUYāēīōūĀĒĪŌŪŷȳ"
     vowel = cont[2]
     print(vowel)
     edge = {"nguine":"", "deum":"-S.", "deus":"-S."}
     workings += 1
-    if vowel in "āēīōūĀĒĪŌŪ":
+    if vowel in "āēīōūĀĒĪŌŪȳ":
         scan += ["L"]
         print("long vowel")
         reasons += ["long vowel"]
@@ -60,10 +60,10 @@ def logic(cont, ind): #general logic
             
     prechecks = "none rn"
     #dipthong precheck
-    if (cont[1] in "aeiouyāēīōū") or (cont[1] == " " and cont[0] in "aeiouyāēīōū") or (cont[1] == " " and vowel == "i"):
+    if (cont[1] in "aeiouyāēīōūȳ") or (cont[1] == " " and cont[0] in "aeiouyāēīōūȳ") or (cont[1] == " " and vowel == "i"):
         prechecks = "erm"
     if ( #elisions
-        len(cont) == 6 and #make sure it doesnt break from cont length issues
+        len(cont) == 6 and #make sure it doesnt break from cont length issues #note that the start of the next word, if a Y, is not a vowel!!
         ((cont[3:5] == "m " and cont[5] in "aeouāēīōū") or #m elision - ignores if prior
         (cont[3] == " " and cont[4] in "aeiouāēīōū") or #space elision - ignores if prior
         (cont[3] == " " and cont[4] == "h" and cont[5] in "aeiouāēīōū")) #h elision - ignores if prior
@@ -90,7 +90,7 @@ def logic(cont, ind): #general logic
         let1 = cont[3]
         let2 = cont[4]
     if ( #double consonants
-        ((let1 not in "aeiouyāēīōū" and let2 not in "aeiouyāēīōū") or
+        ((let1 not in "aeiouyāēīōūȳ" and let2 not in "aeiouyāēīōūȳ") or
         (let1 in "xz" or let2 in "xz") ) and
         (not (let1 in "bpcgdt" and let2 in "rl")) and
         ((let1 + let2) != "th")
@@ -434,7 +434,7 @@ def takeit(line2):
     
     line=""
     for letter in line2: #remove non letters
-        if letter.lower() in "abcdefghijklmnopqrstuvwxyz āēīōū":
+        if letter.lower() in "abcdefghijklmnopqrstuvwxyz āēīōūŷ":
             line += letter
     for i in range(len(line)-1):
         if line[i] == " " and line[i+1] == " ":
@@ -444,7 +444,7 @@ def takeit(line2):
 
     #go through every vowel and do specific logic for each
     for i in range(len(line)):
-        if line[i].lower() in "aeiouāēīōūy":
+        if line[i].lower() in "aeiouāēīōūyŷ":
             print(i)
             working = workings
             if i > 1 and i <= len(line)-3: #middle
@@ -490,17 +490,17 @@ def takeit(line2):
     print(dactyls)
 
     for i in range(len(scan) - 6, 0, -1):
-        changenum = feetnum
+        changenum = feetnum #FEETNUM IS THE INDEX OF THE LAST FOOT
         if scan[i] == "?":
-            if scan[i-1] == "L" and scan[i+1] == "L":
+            if scan[i-1] == "L" and scan[i+1] == "L": #squished between two longs, must be long
                 scan[i] = "L"
                 feet = ["".join(scan[i-1:i+1])] + feet
                 feetnum = i-1
-            elif scan[i+1] == "L" and feetnum != i+1:
+            elif scan[i+1] == "L" and feetnum != i+1: #if next vowel is long and is not the start of a foot, current vowel must be long, start of spondee
                 scan[i] = "L"
                 feet = ["".join(scan[i-1:i+1])] + feet
                 feetnum = i
-            elif scan[i-1] == "?" and dactyls > 0:
+            elif scan[i-1] == "?" and dactyls > 0: #when in doubt, dactyl
                 scan[i] = "S"
                 scan[i-1] = "S"
                 scan[i-2] = "L"
@@ -639,6 +639,7 @@ if __name__ == "__main__":
     #check for common ablatives?
     #accept ō as a character? - yes
     #fixed, but should we return the full line with longs and shorts on vowels?
+    #Musa, mihi causas memora, quō numine laeso
 #quidve dolens regina deum tot volvere casus
 # wrong again ahaha
 #insignem pietate virum, tot adire labores
@@ -658,3 +659,5 @@ if __name__ == "__main__":
 #find problem lines
 
 #ceasuras? accipiunt inimicum imbrem rimisque fatiscunt.
+
+#ȳŷ
