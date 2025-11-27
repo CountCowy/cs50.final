@@ -220,6 +220,12 @@ def view_scan(scan_id):
         return apolgy("This scan doesn't exist", 404)
 
     return render_template("hitscan.html", scan=scans_response.data)
+
+@app.route("/instructions")
+@login_required
+def instructions():
+    
+    return render_template("instructions.html")
         
         
 @app.route("/auth/confirmed")
