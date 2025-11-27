@@ -226,6 +226,42 @@ def view_scan(scan_id):
 def instructions():
     
     return render_template("instructions.html")
+
+@app.route("/contact", methods=["GET", "POST"])
+@login_required
+def contact():
+    print("bro")
+    if request.method == "POST":
+        print("seph")
+        name = request.form.get("name")
+        subject = request.form.get("subject")
+        message = request.form.get("message")
+        
+        try:
+            print({
+                            "email": session["email"],
+                            "username": session["username"],
+                            "namefrommessage": name,
+                            "subject": subject,
+                            "message": message,
+                            "user_id": session["user_id"]
+                        })
+            response = supabase.table("messages").insert({
+                            "email": session["email"],
+                            "username": session["username"],
+                            "namefrommessage": name,
+                            "subject": subject,
+                            "message": message,
+                            "user_id": session["user_id"]
+                        }, returning="minimal").execute()
+        except Exception as e:
+            print("Supabase error:", e)
+            return apology("Database error: " + e.message + str(e.code), 500)
+    
+        flash("Message sent successfully!")
+        return render_template("contact.html", result="Message successfully sent!")
+        
+    return render_template("contact.html")
         
         
 @app.route("/auth/confirmed")
@@ -243,7 +279,7 @@ def auth_confirmed():
 
     if not user:
         return apology("Invalid or expired confirmation link.", 400)
-    
+
     
     # Store user info in Flask session
     session["user_id"] = user.id               # Supabase UUID
