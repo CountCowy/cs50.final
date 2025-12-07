@@ -4,8 +4,6 @@ workings = 0
 magic = []
 elided = []
 reasons = []
-def print(*args, **kwargs):
-    pass   
 
 def procedge(instructions):
     global reasons
@@ -47,7 +45,7 @@ def logic(cont, ind): #general logic
     print(cont)
     print(edge)
     bleh = ""
-    nd=False
+    nd=False#assuming nd = no dipthong
     for key in edge:
         bleh = ""
         if cont in key:
@@ -500,7 +498,9 @@ def takeit(line2):
     feetnum = len(scan)-5
     print("dactyls:")
     print(dactyls)
-
+    
+    """
+    #this loop takes feetnum, scan, and feet
     for i in range(len(scan) - 6, 0, -1):
         changenum = feetnum #FEETNUM IS THE INDEX OF THE LAST FOOT
         if scan[i] == "?":
@@ -513,12 +513,14 @@ def takeit(line2):
                 feet = ["".join(scan[i-1:i+1])] + feet
                 feetnum = i
             elif scan[i-1] == "?" and dactyls > 0: #when in doubt, dactyl
+                if scan[i-2] == "?" and scan[i-3] == "?": #four question marks in a row
+                    
                 scan[i] = "S"
                 scan[i-1] = "S"
-                scan[i-2] = "L"
-                feet = ["".join(scan[i-2:i+1])] + feet
-                feetnum = i-2
-                dactyls -= 1
+                scan[i-2] = "L" #create the dactyl
+                feet = ["".join(scan[i-2:i+1])] + feet #add to feet
+                feetnum = i-2 #set start of latest foot to the start of the dactyl
+                dactyls -= 1 #reduce the amount of dactyls remaining
             elif dactyls == 0:
                 scan[i] = "L"
         if scan[i] == "L" and changenum == feetnum and i != 0:
@@ -528,50 +530,39 @@ def takeit(line2):
                 feetnum = i-1
         print(scan)
         print(feet)
-
-        
-
-    feet2 = []
-    feet2 = ["".join(scan[len(scan)-2:len(scan)])] + feet2
-    feet2 = ["".join(scan[len(scan)-5:len(scan)-2])] + feet2
-    skip = 0
-    for i in range(len(scan) -6, 0, -1):
-        if skip:
-            skip -= 1
-            pass
-        elif scan[i] == "L" and scan[i-1] == "L":
-            feet2 = ["".join(scan[i-1:i+1])] + feet2
-            skip = 1
-        elif scan[i] == "S" and scan[i-1] == "S" and scan[i-2] == "L":
-            feet2 = ["".join(scan[i-2:i+1])] + feet2
-            skip = 2
-        else:
-            feet2 = ["".join(scan[i])] + feet2
-    print()
-    print(feet2)
+        """
+    
+    #fill in the blanks
+    feetOutputs = createfeet(feetnum, scan, feet, dactyls)
+    possibleScans = []
+    possibleFeet = []
+    #unpack output of function
+    for i in range(len(feetOutputs)):
+        print("POSSIBILITIES")
+        print(feetOutputs)
+        possibleScans.append(feetOutputs[i][0])
+        possibleFeet.append(feetOutputs[i][1])
+    scan = possibleScans[0]
+    feet = possibleFeet[0]
+    print("SCAN")
+    print(scan)
+    print("FEET")
+    print(feet)
     
     print("FEEEEEEEEEEET")
     print(feet)
     
     
-    if len(feet2) > 6:
+    if len(feet) > 6:
         problems += ["too many feet to be a line of poetry"]
-    elif len(feet2) < 6:
+    elif len(feet) < 6:
         problems += ["too few feet to be a line of poetry"]
         
-    feet3 = ""
-    for thing in feet:
-        if thing == "LL":
-            feet3 += "Spondee"
-        elif thing == "LSS":
-            feet3 += "Dactyl"
-        else:
-            feet3 += "Trochee"
-        feet3 += ", "
-    feet3 = feet3[:-2]
+    verbalFeet = verbalizeFeet(feet)
     
-    step2 = sigma(scan, line)
+    step2 = sigma(scan.copy(), line[:])
     
+        
     elidOut = ""
     for j in elided:
         startoffirstword = None
@@ -597,9 +588,20 @@ def takeit(line2):
     for foot in feet:
         result += foot+", "
     result = result[:-2]
-    result += "\n" + feet3
+    result += "\n" + verbalFeet
     result += "\n" + stocking(step2)
     
+    if len(possibleScans)>1:
+        result += "\n\nOther option(s):\n"
+        for i in range(len(possibleScans)):
+            if i == 0:
+                pass
+            else:
+                result += sigma(possibleScans[i], line) +"\n"
+                for foot in possibleFeet[i]:
+                    result += foot+", "
+                result += "\n" + verbalizeFeet(possibleFeet[i])
+                result += "\n" + stocking(sigma(possibleScans[i].copy(), line[:]))
     
     result += "\n\n"+elidOut
     
@@ -607,6 +609,7 @@ def takeit(line2):
         result += "\nProblems with input:"
         for problem in problems:
             result += "\n" +problem
+            
     
     print(reasons)
     print(len(reasons))
@@ -618,6 +621,7 @@ def takeit(line2):
     workings = 0
     magic = []
     problems = []
+    print("RECURSION: \n", possibleScans, possibleFeet)
     return(result)
 
 def stocking(scannedline): # adding || between feet on output (like putting on socks)
@@ -636,8 +640,92 @@ def stocking(scannedline): # adding || between feet on output (like putting on s
         i+=1
     return scannedline
 
+def createfeet(lastFootIndex, option0, output0, numDac, start=0):
+    options = [option0]
+    outputs = [output0]
+    length = len(options[0]) - 6
+    if start:
+        length = start
+    for i in range(length, 0, -1):
+        changenum = lastFootIndex #FEETNUM IS THE INDEX OF THE LAST FOOT
+        if options[0][i] == "?":
+            if options[0][i-1] == "L" and options[0][i+1] == "L": #squished between two longs, must be long
+                options[0][i] = "L"
+                outputs[0] = ["".join(options[0][i-1:i+1])] + outputs[0]
+                lastFootIndex = i-1
+            elif options[0][i+1] == "L" and lastFootIndex != i+1: #if next vowel is long and is not the start of a foot, current vowel must be long, start of spondee
+                options[0][i] = "L"
+                outputs[0] = ["".join(options[0][i-1:i+1])] + outputs[0]
+                lastFootIndex = i
+            elif options[0][i-1] == "?" and numDac > 0: #when in doubt, dactyl
+                if options[0][i-2] == "?" and options[0][i-3] == "?": #four question marks in a row
+                    #make these two a spondee and go recursive mode on this shit
+                    bleh = len(options) #need to keep this consistent
+                    options.append(options[0].copy()) #len(options) in order to create a new potential outcome
+                    outputs.append(outputs[0].copy()) #copy over current progress
+                    
+                    options[bleh][i] = "L" #make spondee
+                    options[bleh][i-1] = "L"
+                    outputs[bleh] = ["".join(options[bleh][i-1:i+1])] + outputs[bleh]
+                    lastFootIndex = i-1
+                    
+                    #send into recursion 
+                    newStuff = createfeet(lastFootIndex, options[bleh].copy(), outputs[bleh].copy(), numDac, start=i-1) 
+                    lastFootIndex = changenum #undo index shit
+                    
+                    options.pop()
+                    outputs.pop()
+                    
+                    for j in range(len(newStuff)):
+                        #add new outcomes
+                        print("NEWSTUFF", j, ":\n", newStuff)
+                        options.append(newStuff[j][0])
+                        outputs.append(newStuff[j][1])
+                    
+                #regardless of the recursion stuff, continue "when in doubt, dactyl"
+                options[0][i] = "S"
+                options[0][i-1] = "S"
+                options[0][i-2] = "L" #create the dactyl
+                outputs[0] = ["".join(options[0][i-2:i+1])] + outputs[0] #add to feet
+                lastFootIndex = i-2 #set start of latest foot to the start of the dactyl
+                numDac -= 1 #reduce the amount of dactyls remaining
+        
+            elif numDac == 0: #lowk this should be the first condition
+                options[0][i] = "L"
+        if options[0][i] == "L" and changenum == lastFootIndex and i != 0:
+            if i != lastFootIndex:
+                options[0][i-1] = "L"
+                outputs[0] = ["".join(options[0][i-1:i+1])] + outputs[0]
+                lastFootIndex = i-1
+        print(options[0])
+        print(outputs[0])
+        
+    GETOUT = [] #reference to adrian meme, list of scan, feet pairs
+    for i in range(len(options)):
+        print("OPTIONS")
+        print(options, outputs)
+        GETOUT.append([options[i], outputs[i]])
+    print(len(GETOUT))
+    return(GETOUT)
+
+def verbalizeFeet(listFeet):
+    feet3 = ""
+    for thing in listFeet:
+        if thing == "LL":
+            feet3 += "Spondee"
+        elif thing == "LSS":
+            feet3 += "Dactyl"
+        else:
+            feet3 += "Trochee"
+        feet3 += ", "
+    feet3 = feet3[:-2]
+    return(feet3)
+
 if __name__ == "__main__":
     print(takeit(input("line? ")))
+else:
+    def print(*args, **kwargs):
+        pass
 
 #dipthongs
 # ae, au, ei, eu, oe, and, in early Latin, ai, oi, ou.
