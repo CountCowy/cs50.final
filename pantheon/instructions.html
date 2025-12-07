@@ -102,7 +102,7 @@
                     <div class="scansion-column text-white">
                         <h4 class="text-warning">Disclaimer: The algorithm is NOT 100% accurate.<h4></h4>
                         <ul>
-                            <li>This is largely due to the inherent difficulty of the task. The algorithm scans without any grammar or context information, so the only information it has is the placement of the letters. For some lines of poetry, the ending of the ablative being long by nature might be the key to finishing the scan- my algorithm can't detect that. However if you input a partial scan and manually supply that information, my algorithm can work off of that to finish the scan</li>
+                            <li>This is largely due to the inherent difficulty of the task. The algorithm scans without any grammar or context information, so all it can use is the placement of the letters. For some lines of poetry, the ending of the ablative being long by nature might be the key to finishing the scan- my algorithm can't detect that. However if you input a partial scan and manually supply that information, my algorithm can work off of that to finish the scan</li>
                             <li>My algorithm is not fully refined. There are still bugs in the thought process. If you find any lines with iffy output, please send them to me for review through <a href="/contact">contact!</a> That would be much appreciated!</a></li>
                             <li>It is for these reasons that I decided to include the ChatGPT output. To provide some more information to the user for cross reference</li>
                         </ul>
@@ -231,7 +231,8 @@
               <p>Please remember that this process in not flawless. In fact, the example line, <em>Musa, mihi causas memora, quō numine laeso</em>, will output an incorrect scansion if you do not provide the long mark on quo. Test it for yourself!</p>
               <p>That's because the "when in doubt, dactyl" method happens to be wrong in this scenario. There is not enough information for the algorithm to be 100% correct without grammatical context which leads to an ambiguous situation, so it needs a nudge in the right direction from the user.</p>
               <p>As another aide for these ambiguous situations, the algorithm shows both possible outcomes, and the user can determine the correct final scan for themselves. </p>
-              <p>I hope this proves useful!</p>
+              <p>This algorithm is particularly weak to hiatus and does not detect ceasuras</p>
+              <p>I hope this all proves useful!</p>
           </div>
       </div>
   </div>
