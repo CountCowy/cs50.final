@@ -28,6 +28,7 @@ def logic(cont, ind): #general logic
     global elided
     global reasons
     global magic
+    global sussyI
     vowels = "aeiouyAEIOUYāēīōūĀĒĪŌŪŷȳ"
     vowel = cont[2]
     print(vowel)
@@ -37,7 +38,7 @@ def logic(cont, ind): #general logic
         scan += ["L"]
         print("long vowel")
         reasons += ["long vowel"]
-        if furthercheck == True: # i must be the vowel in this case, and it must but non-consonantal
+        if furthercheck == True: # i must be the vowel in this case, and it must be non-consonantal
             magic = magic[:-1]
             furthercheck = False
             print("further check recorded")
@@ -58,18 +59,24 @@ def logic(cont, ind): #general logic
             
     prechecks = "none rn"
     #dipthong precheck
-    if (cont[1] in "aeiouyāēīōūȳ") or (cont[1] == " " and cont[0] in "aeiouyāēīōūȳ") or (cont[1] == " " and vowel == "i"):
+    if (cont[1] in vowels) or (cont[1] == " " and cont[0] in vowels) or (cont[1] == " " and vowel == "i"):
         prechecks = "erm"
     if ( #elisions
         len(cont) == 6 and #make sure it doesnt break from cont length issues #note that the start of the next word, if a Y, is not a vowel!!
-        ((cont[3:5] == "m " and cont[5] in "aeouāēīōū") or #m elision - ignores if prior
-        (cont[3] == " " and cont[4] in "aeiouāēīōū") or #space elision - ignores if prior
-        (cont[3] == " " and cont[4] == "h" and cont[5] in "aeiouāēīōū")) #h elision - ignores if prior
+        ((cont[3:5] == "m " and cont[5] in vowels) or #m elision - ignores if prior
+        (cont[3] == " " and cont[4] in vowels) or #space elision - ignores if prior
+        (cont[3] == " " and cont[4] == "h" and cont[5] in vowels)) #h elision - ignores if prior
         ):
-        print("elided")
-        workings -= 1
-        elided += [ind]
-        return()
+        
+        #need to do additional check for consonantal i
+        if cont[4] == "i":
+            if (cont[3] == " " and cont[5] in vowels): # i starts word and followed by vowel, is consonantal
+                pass #don't elide
+        else:
+            print("elided")
+            workings -= 1
+            elided += [ind]
+            return()
     elif cont[3:5] == "m " and cont[5] == "i": #m elision w/ i as 2nd vowel - look deeper
         furthercheck = True
         print("elided with 2nd I, checking deeper")
@@ -256,7 +263,7 @@ def logictf(cont, ind): #logic for the start and finish
                     scan += ["L"]
                     reasons += ["First vowel"]
             elif vowel == "u":
-                if cont[0:2] in ["qu", "ou"]:
+                if cont[0:2] in ["qu", "ou", "au", "eu"]:
                     workings -= 1
                     return()
                 elif cont[0] in "aeiou":
@@ -499,39 +506,6 @@ def takeit(line2):
     print("dactyls:")
     print(dactyls)
     
-    """
-    #this loop takes feetnum, scan, and feet
-    for i in range(len(scan) - 6, 0, -1):
-        changenum = feetnum #FEETNUM IS THE INDEX OF THE LAST FOOT
-        if scan[i] == "?":
-            if scan[i-1] == "L" and scan[i+1] == "L": #squished between two longs, must be long
-                scan[i] = "L"
-                feet = ["".join(scan[i-1:i+1])] + feet
-                feetnum = i-1
-            elif scan[i+1] == "L" and feetnum != i+1: #if next vowel is long and is not the start of a foot, current vowel must be long, start of spondee
-                scan[i] = "L"
-                feet = ["".join(scan[i-1:i+1])] + feet
-                feetnum = i
-            elif scan[i-1] == "?" and dactyls > 0: #when in doubt, dactyl
-                if scan[i-2] == "?" and scan[i-3] == "?": #four question marks in a row
-                    
-                scan[i] = "S"
-                scan[i-1] = "S"
-                scan[i-2] = "L" #create the dactyl
-                feet = ["".join(scan[i-2:i+1])] + feet #add to feet
-                feetnum = i-2 #set start of latest foot to the start of the dactyl
-                dactyls -= 1 #reduce the amount of dactyls remaining
-            elif dactyls == 0:
-                scan[i] = "L"
-        if scan[i] == "L" and changenum == feetnum and i != 0:
-            if i != feetnum:
-                scan[i-1] = "L"
-                feet = ["".join(scan[i-1:i+1])] + feet
-                feetnum = i-1
-        print(scan)
-        print(feet)
-        """
-    
     #fill in the blanks
     feetOutputs = createfeet(feetnum, scan, feet, dactyls)
     possibleScans = []
@@ -602,6 +576,7 @@ def takeit(line2):
                     result += foot+", "
                 result += "\n" + verbalizeFeet(possibleFeet[i])
                 result += "\n" + stocking(sigma(possibleScans[i].copy(), line[:]))
+                result += "\n\n"
     
     result += "\n\n"+elidOut
     
@@ -658,7 +633,7 @@ def createfeet(lastFootIndex, option0, output0, numDac, start=0):
                 outputs[0] = ["".join(options[0][i-1:i+1])] + outputs[0]
                 lastFootIndex = i
             elif options[0][i-1] == "?" and numDac > 0: #when in doubt, dactyl
-                if options[0][i-2] == "?" and options[0][i-3] == "?": #four question marks in a row
+                if options[0][i-2] == "?" and options[0][i-3] == "?" and (i > numDac*3): #four question marks in a row, and the rest of the scan isn't guaranteed to be dactyls
                     #make these two a spondee and go recursive mode on this shit
                     bleh = len(options) #need to keep this consistent
                     options.append(options[0].copy()) #len(options) in order to create a new potential outcome

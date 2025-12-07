@@ -90,9 +90,12 @@ def index():
 @login_required
 def scanned():
     """page to display final scansion of inputed line"""
-    algo = session.pop('algo')
-    gpt = session.pop('gpt')
-    return render_template("scanned.html", algorithm_scansion=algo, gpt_scansion=gpt)
+    try:
+        algo = session.pop('algo')
+        gpt = session.pop('gpt')
+        return render_template("scanned.html", algorithm_scansion=algo, gpt_scansion=gpt)
+    except:
+        return redirect(url_for("history"))
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
