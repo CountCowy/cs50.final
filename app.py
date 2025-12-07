@@ -1,4 +1,4 @@
-from flask import Flask, flash, redirect, render_template, request, session, url_for, g
+from flask import Flask, flash, redirect, render_template, request, session, url_for
 from scanner import takeit
 from JePeux import query_openai
 import os
