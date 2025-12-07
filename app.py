@@ -83,7 +83,7 @@ def index():
         return redirect(url_for('scanned'))
     
 
-    return render_template("index.html",)
+    return render_template("index.html")
 
 
 @app.route("/scanned")

@@ -1,4 +1,4 @@
-#essentially helpers.py, but named after labienus cuz he's the goat
+#essentially helpers.py from cs50 finance, but named after labienus cuz he's the goat
 import requests
 
 from flask import redirect, render_template, session
@@ -26,7 +26,7 @@ def apology(message, code=400): #stolen completely from cs50 finance
             s = s.replace(old, new)
         return s
 
-    return render_template("apology.html", top=code, bottom=escape(message)), code
+    return render_template("apology.html", top=code, bottom=escape(message)), code #https://www.thecowvets.co.nz/s-a-d-cow-management/
 
 
 def login_required(f):
