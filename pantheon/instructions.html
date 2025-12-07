@@ -9,7 +9,7 @@
 
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favi.png') }}">
-  
+
   <style>
     body {
       background-color: #121212;
@@ -142,7 +142,7 @@
                   <li>Mark any vowels that are long by position: vowel followed by two consonants (or x, z)</li>
                   <li>Go into vowel specific logic
                     <ul>
-                        <li>Identify whether or not it is in a dipthong, and then whether it is the start or end of the dipthong (start is marked as long, end is ignored)</li>
+                        <li>Identify whether or not it is in a diphthong, and then whether it is the start or end of the diphthong (start is marked as long, end is ignored)</li>
                         <li>For I, identify whether or not it is a consonantal I (aka J) (if it starts a word and is followed by a vowel or is sandwiched by 2 vowels (intervocalic))</li>
                         <li>Side note: You make the life of the algorithm a lot easier if you input what you know to be a consonantal I as a J</li>
                         <li>For U, ignore it if it is following a q ("qu" is a consonant in Latin)</li>
@@ -229,7 +229,8 @@
           <div class="card-body text-white">
               <p>That is the process under the hood of this website. Again, if you have any questions, criticism, confusion etc. please contact me on <a href="/contact">the contact page</a></p>
               <p>Please remember that this process in not flawless. In fact, the example line, <em>Musa, mihi causas memora, quō numine laeso</em>, will output an incorrect scansion if you do not provide the long mark on quo. Test it for yourself!</p>
-              <p>That's because the "when in doubt, dactyl" method happens to be wrong in this scenario. There is not enough information for the algoritm to be 100% correct without grammatical context, so it needs a nudge in the right direction from the user</p>
+              <p>That's because the "when in doubt, dactyl" method happens to be wrong in this scenario. There is not enough information for the algorithm to be 100% correct without grammatical context which leads to an ambiguous situation, so it needs a nudge in the right direction from the user.</p>
+              <p>As another aide for these ambiguous situations, the algorithm shows both possible outcomes, and the user can determine the correct final scan for themselves. </p>
               <p>I hope this proves useful!</p>
           </div>
       </div>

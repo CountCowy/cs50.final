@@ -486,6 +486,8 @@ def takeit(line2):
             print(len(reasons), len(magic), "smthn man")
                 
     print(scan)
+    if scan[len(scan)-4] == "L" or scan[len(scan)-3] == "L":
+        problems += ["!! Something wrong with 5th foot, syllable previously determined long forced to be short !!"]
     scan[len(scan)-5:len(scan)] = ["L","S", "S", "L", "X"] #auto scan last 2 feet
     print(scan)
     print(len(scan))
