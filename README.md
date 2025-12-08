@@ -1,5 +1,7 @@
 Constant's Scanner
 
+https://youtu.be/j8f7Yo8oumQ
+
 A full-stack web application for scanning Latin poetry in dactylic hexameter, combining a custom algorithm with optional OpenAI assistance.
 This project is built with Python Flask, Jinja, Bootstrap, Supabase, and deployed on Vercel.
 
