@@ -14,7 +14,7 @@ try:
         model="gpt-4o-mini",  
         messages=[
             {"role": "system", "content": "You are an extremely well researched expert in scansion of Latin poetry in Dactylic Hexameter. You also understand complex Python algorithms"},
-            {"role": "user", "content": f"Will this python code properly scan latin in Dactylic Hexameter?: {code_text}"},
+            {"role": "user", "content": f"How would you describe the approach this program takes to algorithmically scanning latin poetry?: {code_text}"},
         ],
         temperature=0,
         #response_format={"type": "json_object"

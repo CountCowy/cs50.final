@@ -32,7 +32,11 @@ def logic(cont, ind): #general logic
     vowels = "aeiouyAEIOUYāēīōūĀĒĪŌŪŷȳ"
     vowel = cont[2]
     print(vowel)
-    edge = {"nguine":"", "deum":"-S.", "deus":"-S."}
+    
+    #these are edge cases that cannot be caught in the algorithm but
+    #are nonetheless consistent enough in literature to make a special case
+    #for example, in the word sanguine, the u is not a vowel for various reasons that can't be detected with just letter placement
+    edge = {"nguine":"", "deum":"-S.", "deus":"-S."} 
     workings += 1
     if vowel in "āēīōūĀĒĪŌŪȳ":
         scan += ["L"]
@@ -206,7 +210,7 @@ def logic(cont, ind): #general logic
             reasons += ["Filled in"]
     print("added")
     print(scan)
-def logictf(cont, ind): #logic for the start and finish
+def logictf(cont, ind): #logic for the start
     global scan
     global workings
     global reasons
@@ -318,9 +322,14 @@ def logicend(cont, ind):
 
     print(scan)
     
-def sigma(scan, line):
+
+#this function takes a line of poetry and a scan (the scan does not need to be complete)
+#it adds long marks and short marks to the vowels in the line of poetry according to the scansion provided
+def sigma(scan, line): 
     #āēīōū
     #ă, ĕ, ĭ, ŏ, ŭ
+    #Ā, Ē, Ī, Ō, Ū
+    #Ă, Ĕ, Ĭ, Ŏ, Ŭ
     scannedline = list(line)
     used = 0
     print(magic)
@@ -372,35 +381,35 @@ def sigma(scan, line):
                         scannedline[i] = "ŷ"
                     else:
                         scannedline[i] = "y" """
-            if scannedline[i] == "a":
+            if scannedline[i] == "a" or scannedline[i] == "A":
                 if scan[used] in ["L", "X"]:
                     scannedline[i] = "ā"
                 elif scan[used] == "S":
                     scannedline[i] = "ă"
                 else:
                     scannedline[i] = "a"
-            elif scannedline[i] == "e":
+            elif scannedline[i] == "e" or scannedline[i] == "E":
                 if scan[used] in ["L","X"]:
                     scannedline[i] = "ē"
                 elif scan[used] == "S":
                     scannedline[i] = "ĕ"
                 else:
                     scannedline[i] = "e"
-            elif scannedline[i] == "i":
+            elif scannedline[i] == "i" or scannedline[i] == "I":
                 if scan[used] in ["L", "X"]:
                     scannedline[i] = "ī"
                 elif scan[used] == "S":
                     scannedline[i] = "ĭ"
                 else:
                     scannedline[i] = "i"
-            elif scannedline[i] == "o":
+            elif scannedline[i] == "o" or scannedline[i] == "O":
                 if scan[used] in ["L", "X"]:
                     scannedline[i] = "ō"
                 elif scan[used] == "S":
                     scannedline[i] = "ŏ"
                 else:
                     scannedline[i] = "o"
-            elif scannedline[i] == "u":
+            elif scannedline[i] == "u" or scannedline[i] == "U":
                 if scan[used] in ["L", "X"]:
                     scannedline[i] = "ū"
                 elif scan[used] == "S":
