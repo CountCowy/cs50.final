@@ -29,7 +29,8 @@ def logic(cont, ind): #general logic
     global reasons
     global magic
     global sussyI
-    vowels = "aeiouyAEIOUYāēīōūĀĒĪŌŪŷȳ"
+    vowels = "aeiouyAEIOUYāēīōūĀĒĪŌŪŷȳăĕĭŏŭ"
+    vowelsNoY = "aeiouAEIOUāēīōūĀĒĪŌŪăĕĭŏŭ"
     vowel = cont[2]
     print(vowel)
     
@@ -47,6 +48,16 @@ def logic(cont, ind): #general logic
             furthercheck = False
             print("further check recorded")
         return()
+    elif vowel in "ăĕĭŏŭ":
+        scan += ["S"]
+        print("short vowel")
+        reasons += ["short vowel"]
+        if furthercheck == True: # i must be the vowel in this case, and it must be non-consonantal
+            magic = magic[:-1]
+            furthercheck = False
+            print("further check recorded")
+        return()
+
     print(cont)
     print(edge)
     bleh = ""
@@ -67,15 +78,21 @@ def logic(cont, ind): #general logic
         prechecks = "erm"
     if ( #elisions
         len(cont) == 6 and #make sure it doesnt break from cont length issues #note that the start of the next word, if a Y, is not a vowel!!
-        ((cont[3:5] == "m " and cont[5] in vowels) or #m elision - ignores if prior
-        (cont[3] == " " and cont[4] in vowels) or #space elision - ignores if prior
-        (cont[3] == " " and cont[4] == "h" and cont[5] in vowels)) #h elision - ignores if prior
+        ((cont[3:5] == "m " and cont[5] in vowelsNoY) or #m elision - ignores if prior
+        (cont[3] == " " and cont[4] in vowelsNoY) or #space elision - ignores if prior
+        (cont[3] == " " and cont[4] == "h" and cont[5] in vowelsNoY)) #h elision - ignores if prior
         ):
         
         #need to do additional check for consonantal i
         if cont[4] == "i":
             if (cont[3] == " " and cont[5] in vowels): # i starts word and followed by vowel, is consonantal
+                print("consonantal I stops elision")
                 pass #don't elide
+            else:
+                print("elided")
+                workings -= 1
+                elided += [ind]
+                return()
         else:
             print("elided")
             workings -= 1
@@ -99,7 +116,7 @@ def logic(cont, ind): #general logic
         let1 = cont[3]
         let2 = cont[4]
     if ( #double consonants
-        ((let1 not in "aeiouyāēīōūȳ" and let2 not in "aeiouyāēīōūȳ") or
+        ((let1 not in vowels and let2 not in vowels) or
         (let1 in "xz" or let2 in "xz") ) and
         (not (let1 in "bpcgdt" and let2 in "rl")) and
         ((let1 + let2) != "th")
@@ -214,19 +231,33 @@ def logictf(cont, ind): #logic for the start
     global scan
     global workings
     global reasons
+    vowels = "aeiouyAEIOUYāēīōūĀĒĪŌŪŷȳăĕĭŏŭ"
+    vowelsNoY = "aeiouAEIOUāēīōūĀĒĪŌŪăĕĭŏŭ"
     vowel = cont[ind]
     workings += 1
+    
+    if vowel in "āēīōūĀĒĪŌŪȳ":
+        scan += ["L"]
+        print("long vowel")
+        reasons += ["long vowel"]
+        return()
+    elif vowel in "ăĕĭŏŭ":
+        scan += ["S"]
+        print("short vowel")
+        reasons += ["short vowel"]
+        return()
+
     if ind < 2:
         if ( #elisions
-            ((cont[ind+1:ind+3] == "m " and cont[ind+3] in "aeiou") or #m elision - ignores if prior
-            (cont[ind+1] == " " and cont[ind+2] in "aeiou") or #space elision - ignores if prior
-            (cont[ind+1] == " " and cont[ind+2] == "h" and cont[ind+3] in "aeiou")) #h elision - ignores if prior
+            ((cont[ind+1:ind+3] == "m " and cont[ind+3] in vowelsNoY) or #m elision - ignores if prior
+            (cont[ind+1] == " " and cont[ind+2] in vowelsNoY) or #space elision - ignores if prior
+            (cont[ind+1] == " " and cont[ind+2] == "h" and cont[5] in vowelsNoY)) #h elision - ignores if prior
             ):
             print("elided")
             workings -= 1
             return()
         if ind == 0:
-            if cont[ind] == "i" and cont[ind+1] in "aeiou":
+            if cont[ind] == "i" and cont[ind+1] in vowels:
                 workings -= 1
                 return() #consonantal I
             else:
@@ -234,16 +265,16 @@ def logictf(cont, ind): #logic for the start
                 reasons += ["First vowel"]
         elif ind == 1:
             if vowel == "a":
-                if cont[0] in "aeiou":
+                if cont[0] in vowels:
                     scan += ["?"]
                     reasons += ["Filled in"]
                 else:
                     scan += ["L"] #can never be end of dipthong / elide, so auto long
                     reasons += ["First vowel"]
             elif vowel == "e":
-                if cont[0:2] == "ae":
+                if cont[0:2] in ["ae", "oe"]:
                     return()
-                elif cont[0] in "aeiou":
+                elif cont[0] in vowels:
                     scan += ["?"]
                     reasons += ["Filled in"]
                 else:
@@ -253,14 +284,14 @@ def logictf(cont, ind): #logic for the start
                 if cont[0:2] in ["ei", "oi"]:
                     workings -= 1
                     return()
-                elif cont[0] in "aeiou":
+                elif cont[0] in vowels:
                     scan += ["?"]
                     reasons += ["Filled in"]
                 else:
                     scan += ["L"]
                     reasons += ["First vowel"]
             elif vowel == "o":
-                if cont[0] in "aeiou":
+                if cont[0] in vowels:
                     scan += ["?"]
                     reasons += ["Filled in"]
                 else:
@@ -270,7 +301,7 @@ def logictf(cont, ind): #logic for the start
                 if cont[0:2] in ["qu", "ou", "au", "eu"]:
                     workings -= 1
                     return()
-                elif cont[0] in "aeiou":
+                elif cont[0] in vowels:
                     scan += ["?"]
                     reasons += ["Filled in"]
                 else:
@@ -293,7 +324,7 @@ def logicend(cont, ind):
         scan += ["X"]
         reasons += ["Last vowel"]
     elif vowel == "e":
-        if cont[ind-1:ind+1] == "ae":
+        if cont[ind-1:ind+1] in ["ae", "oe"]:
             workings -= 1
             return()
         else:
@@ -338,49 +369,7 @@ def sigma(scan, line):
         if i in magic:
             print(scan[used:])
             print("".join(scannedline[i:]))
-            """match scannedline[i]:
-                case "a":
-                    if scan[used] == "L":
-                        scannedline[i] = "ā"
-                    elif scan[used] == "S":
-                        scannedline[i] = "ă"
-                    else:
-                        scannedline[i] = "a"
-                case "e":
-                    if scan[used] == "L":
-                        scannedline[i] = "ē"
-                    elif scan[used] == "S":
-                        scannedline[i] = "ĕ"
-                    else:
-                        scannedline[i] = "e"    
-                case "i":
-                    if scan[used] == "L":
-                        scannedline[i] = "ī"
-                    elif scan[used] == "S":
-                        scannedline[i] = "ĭ"
-                    else:
-                        scannedline[i] = "i"
-                case "o":
-                    if scan[used] == "L":
-                        scannedline[i] = "ō"
-                    elif scan[used] == "S":
-                        scannedline[i] = "ŏ"
-                    else:
-                        scannedline[i] = "o"
-                case "u":
-                    if scan[used] == "L":
-                        scannedline[i] = "ū"
-                    elif scan[used] == "S":
-                        scannedline[i] = "ŭ"
-                    else:
-                        scannedline[i] = "u"
-                case "y":
-                    if scan[used] == "L":
-                        scannedline[i] = "ȳ"
-                    elif scan[used] == "S":
-                        scannedline[i] = "ŷ"
-                    else:
-                        scannedline[i] = "y" """
+            
             if scannedline[i] == "a" or scannedline[i] == "A":
                 if scan[used] in ["L", "X"]:
                     scannedline[i] = "ā"
@@ -446,10 +435,11 @@ def takeit(line2):
     elided = []
     reasons = []
     problems = [] #potential problems with the inputted line
-    
+    vowels = "aeiouyAEIOUYāēīōūĀĒĪŌŪŷȳăĕĭŏŭ"
+
     line=""
-    for letter in line2: #remove non letters
-        if letter.lower() in "abcdefghijklmnopqrstuvwxyz āēīōūŷ":
+    for letter in line2.lower(): #remove non letters
+        if letter.lower() in "abcdefghijklmnopqrstuvwxyz "+vowels:
             line += letter
     for i in range(len(line)-1):
         if line[i] == " " and line[i+1] == " ":
@@ -465,7 +455,7 @@ def takeit(line2):
 
     #go through every vowel and do specific logic for each
     for i in range(len(line)):
-        if line[i].lower() in "aeiouāēīōūyŷ":
+        if line[i].lower() in vowels:
             print(i)
             working = workings
             if i > 1 and i <= len(line)-3: #middle
@@ -589,13 +579,14 @@ def takeit(line2):
                 result += "\n" + stocking(sigma(possibleScans[i].copy(), line[:]))
                 result += "\n\n"
     
-    result += "\n\n"+elidOut
+    result += "\n\n"+elidOut + "\n"
     
     if problems:
         result += "\nProblems with input:"
         for problem in problems:
             result += "\n" +problem
             
+    result += "\n\nRemember, the algorithm is more accurate if you replace consonantal I's with j and if you add any of the scan that you already know"
     
     print(reasons)
     print(len(reasons))

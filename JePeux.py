@@ -12,6 +12,12 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 
 def query_openai(line: str) -> str:
     prompt = """
+Use these resources on scansion to guide you in the following actions
+https://dcc.dickinson.edu/grammar/latin/general-rules-quantity
+https://dcc.dickinson.edu/grammar/latin/quantity-final-syllables
+https://dcc.dickinson.edu/grammar/latin/quantity-perfects-and-perfect-participles
+https://dcc.dickinson.edu/grammar/latin/quantity-derivatives
+
 Scan the following single line of Latin poetry in dactylic hexameter with maximum philological accuracy.
 
 Line:
@@ -27,6 +33,7 @@ Do the following steps explicitly and in order:
 6. Then give the line again with macrons/breves applied to the syllables.
 
 Rules to follow:
+- Check with the resources given to you
 - Do not guess; give specific reasons for every syllable.
 - If a syllable’s length is metrically forced, say so.
 - Use classical pronunciation rules, not ecclesiastical.
