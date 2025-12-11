@@ -102,9 +102,16 @@
                     <div class="scansion-column text-white">
                         <h4 class="text-warning">Disclaimer: The algorithm is NOT 100% accurate.<h4></h4>
                         <ul>
-                            <li>This is largely due to the inherent difficulty of the task. The algorithm scans without any grammar or context information, so all it can use is the placement of the letters. For some lines of poetry, the ending of the ablative being long by nature might be the key to finishing the scan- my algorithm can't detect that. However if you input a partial scan and manually supply that information, my algorithm can work off of that to finish the scan</li>
+                            <li>This is due to the inherent difficulty of the task. The algorithm scans without any grammar or context information, so all it can use is the placement of the letters. For some lines of poetry, the ending of the ablative being long by nature might be the key to finishing the scan- my algorithm can't detect that.</li>
+                            <li>However, if you input a partial scan and manually supply such information, my algorithm can work off of that to finish the scan more accurately</li>
                             <li>My algorithm is not fully refined. There are still bugs in the thought process. If you find any lines with iffy output, please send them to me for review through <a href="/contact">contact!</a> That would be much appreciated!</a></li>
                             <li>It is for these reasons that I decided to include the ChatGPT output. To provide some more information to the user for cross reference</li>
+                            <li>Improve the algorithm's output accuracy by</li>
+                            <ul>
+                                <li>Replacing consonantal i's with a J</li>
+                                <li>Marking any scansion with macrons and breves on the input</li>
+                                <li>For partial scans, putting the macrons of diphthongs on the first vowel rather than the second</li>
+                            </ul>
                         </ul>
                     </div>
                     </div>
@@ -115,9 +122,11 @@
                     <div class="scansion-column text-white">
                         <h4 class="text-warning">Disclaimer: ChatGPT IS VERY INACCURATE</h4>
                         <ul>
-                            <li>ChatGPT is surprisingly terrible at scanning latin poetry, which makes sense since there's not much material online for it to learn from. Please note that my algorithm does not use ChatGPT or any other generative AI for any part of the process (not even for writing or debugging any part of the code)</li>
+                            <li>ChatGPT is surprisingly terrible at scanning latin poetry, which makes sense since there's not much material online for it to learn from. Please note that my algorithm does not use ChatGPT or any other LLM for any part of the process (not even for writing or debugging any part of the code)</li>
+                            <li>My conjecture is that, since LLMs see all prompts as tokens rather than individual characters (a token is a numeric representation of a collection of characters aka letters. <a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/watch?v=nKSk_TiR8YA">this video</a> explains it well), they are particularly worse at tasks which look at word structure such as scansion.</li>
                             <li>Given this innaccuracy, please do not consider the ChatGPT output directly. Only use it to better understand the reasoning of the algorithm, and as additional context. In the case of a conflict between the output of ChatGPT and the algorithm, odds are (99% chance) the algorithm is more correct (unless the output happens to be really bad).</li>
                             <li>Again, ChatGPT is solely used to provide additional information on grammatical reasoning for the scansion and should not be taken at face value.</li>
+                            <li>ChatGPT is also the reason why the scansion takes so long to load- the model involuntarily has a long response time</li>
                         </ul>
                     </div>
                     </div>
