@@ -70,23 +70,41 @@ project/
 ├── README.md
 
 ├── pantheon/
+
 │   ├── index.html
+
 │   ├── register.html
+
 │   ├── login.html
+
 │   ├── scanned.html
+
 │   ├── instructions.html
+
 │   ├── history.html
+
 │   ├── hitscan.html
+
 │   ├── contact.html
+
 │   ├── apology.html
+
 │   └── layout.html
 
 │
+
 ├── static/
+
 │   ├
+
 │   └── favicon.png
+
 │
+
 ├── scanner.py          # Custom scansion algorithm
+
 ├── JePeux.py           # OpenAI integration
+
 ├── labienus.py         # auth helpers (login_required, apology)
+
 └── .env
