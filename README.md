@@ -1,8 +1,6 @@
 Constant's Scanner
 
-https://youtu.be/j8f7Yo8oumQ
-https://github.com/CountCowy/cs50.final
-https://constantscan.vercel.app/ <-- web app can be run here, hosted via Vercel
+https://constantscan.vercel.app/ 
 
 A full-stack web application for scanning Latin poetry in dactylic hexameter, combining a custom algorithm with optional OpenAI assistance.
 This project is built with Python Flask, Jinja, Bootstrap, Supabase, and deployed on Vercel.
