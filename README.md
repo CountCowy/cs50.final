@@ -58,6 +58,3 @@ Deployment
 - Deployed on Vercel (supports serverless Flask via adapter)
 
 - Uses Supabase as the backend database
-
-
-└── .env
