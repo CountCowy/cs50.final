@@ -61,8 +61,8 @@ Deployment
 
 Project Structure
 project/
-│
-├── app.py
+│\n
+├── app.py\n
 ├── requirements.txt
 ├── README.md
 ├── pantheon/
